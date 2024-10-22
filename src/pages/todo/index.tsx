@@ -1,3 +1,3 @@
 export default function Todo () {
-    return 'todos page'
+    return 'todo page'
 }
