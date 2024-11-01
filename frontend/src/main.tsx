@@ -4,6 +4,7 @@ import { createBrowserRouter, redirect, RouterProvider } from 'react-router-dom'
 import Login from './pages/login/index.tsx'
 import Signup from './pages/signup/index.tsx'
 import Todo from './pages/todo/index.tsx'
+import TodoDetail from './pages/todo/[id]/index.tsx'
 
 function authLoader() {
   if (!localStorage.getItem('sessionToken')) {
@@ -24,7 +25,13 @@ const router = createBrowserRouter([{
   element: <Signup />
 }, {
   path: '/todo',
-  element: <Todo />
+  element: <Todo />,
+  children: [
+    {
+      path: ':id',
+      element: <TodoDetail />
+    }
+  ]
 }
 ])
 
