@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from 'react'
+import AddTodoForm from '../../features/todo/add/ui/addTodoForm'
 
 interface Todo {
   id: string
@@ -14,8 +15,6 @@ interface TodoEditContent extends Todo {
 
 export default function Todo() {
   const [todos, setTodos] = useState<Todo[]>([])
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
   const [editTitle, setEditTitle] = useState('')
   const [editContent, setEditContent] = useState('')
   const [todoDetail, setTodoDetail] = useState<TodoEditContent | null>()
@@ -25,7 +24,7 @@ export default function Todo() {
     ...(token ? { Authorization: token } : {})
   }
 
-  function handleCreateButtonClick() {
+  function handleCreateButtonClick(title: string, content: string) {
     fetch('http://localhost:8080/todos', {
       method: 'POST',
       headers,
@@ -34,8 +33,6 @@ export default function Todo() {
       .then((response) => response.json())
       .then((result) => {
         setTodos([...todos, result.data])
-        setTitle('')
-        setContent('')
       })
   }
 
@@ -97,27 +94,7 @@ export default function Todo() {
 
   return (
     <>
-      <section>
-        <h1>Todo Create</h1>
-        <section>
-          <input
-            type="value"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            autoFocus
-          ></input>
-        </section>
-        <section>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
-        </section>
-
-        <section>
-          <button onClick={handleCreateButtonClick}>생성</button>
-        </section>
-      </section>
+      <AddTodoForm handleCreateButtonClick={handleCreateButtonClick} />
       <hr />
       <section style={{ display: 'flex' }}>
         <section
