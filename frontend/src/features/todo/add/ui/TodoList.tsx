@@ -1,8 +1,14 @@
-import { Fragment } from "react/jsx-runtime";
-import { Todo, TodoEditContent } from "../../../../entities/todo/model/types";
-import { Dispatch, SetStateAction } from "react";
+import { Fragment } from 'react/jsx-runtime'
+import { Todo, TodoEditContent } from '../../../../entities/todo/model/types'
+import { Dispatch, SetStateAction } from 'react'
 
-export default function TodoList({ todos, setTodoDetail }: { todos: Todo[], setTodoDetail: Dispatch<SetStateAction<TodoEditContent | null | undefined>> }) {
+export default function TodoList({
+  todos,
+  setSelectedTodo
+}: {
+  todos: Todo[]
+  setSelectedTodo: Dispatch<SetStateAction<TodoEditContent>>
+}) {
   return (
     <>
       <h1>Todo List</h1>
@@ -10,7 +16,7 @@ export default function TodoList({ todos, setTodoDetail }: { todos: Todo[], setT
         todos.map((todo) => (
           <Fragment key={todo.id}>
             <li
-              onClick={() => setTodoDetail({ ...todo, isEdit: false })}
+              onClick={() => setSelectedTodo({ ...todo, isEdit: false })}
               style={{ cursor: 'pointer' }}
             >
               {todo.title}
