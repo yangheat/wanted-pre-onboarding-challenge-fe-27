@@ -1,17 +1,7 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import AddTodoForm from '../../features/todo/add/ui/AddTodoForm'
-
-interface Todo {
-  id: string
-  title: string
-  content: string
-  createAt: string
-  updateAt: string
-}
-
-interface TodoEditContent extends Todo {
-  isEdit: boolean
-}
+import type { Todo, TodoEditContent } from '../../entities/todo/model/types'
+import TodoList from '../../features/todo/add/ui/TodoList'
 
 export default function Todo() {
   const [todos, setTodos] = useState<Todo[]>([])
@@ -100,18 +90,7 @@ export default function Todo() {
         <section
           style={{ width: '50%', marginLeft: '1rem', borderRight: '1px solid' }}
         >
-          <h1>Todo List</h1>
-          {todos.length > 0 &&
-            todos.map((todo) => (
-              <Fragment key={todo.id}>
-                <li
-                  onClick={() => setTodoDetail({ ...todo, isEdit: false })}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {todo.title}
-                </li>
-              </Fragment>
-            ))}
+          <TodoList todos={todos} setTodoDetail={setTodoDetail}/>
         </section>
         <section style={{ width: '50%', marginLeft: '1rem' }}>
           <h1>Todo Detail</h1>
