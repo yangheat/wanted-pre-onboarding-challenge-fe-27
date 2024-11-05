@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import AddTodoForm from '../../features/todo/add/ui/AddTodoForm'
+import AddTodoForm from '../../features/todo/ui/AddTodoForm'
 import type { Todo, TodoEditContent } from '../../entities/todo/model/types'
-import TodoList from '../../features/todo/add/ui/TodoList'
-import TodoDetail from '../../features/todo/add/ui/TodoDetail'
+import TodoList from '../../features/todo/ui/TodoList'
+import TodoDetail from '../../features/todo/ui/TodoDetail'
 import { authController } from '../../entities/auth'
 
 export default function Todo() {
