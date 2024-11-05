@@ -1,5 +1,6 @@
 import { Dispatch, KeyboardEvent, SetStateAction, useState } from 'react'
 import { Todo } from '../../../../entities/todo/model/types'
+import { authController } from '../../../../entities/auth'
 
 export default function AddTodoForm({
   setTodos
@@ -9,7 +10,8 @@ export default function AddTodoForm({
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
 
-  const token = localStorage.getItem('sessionToken')
+  const auth = new authController()
+  const token = auth.getToken()
 
   function resetInput() {
     setTitle('')
@@ -21,7 +23,7 @@ export default function AddTodoForm({
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-    ...(token ? { Authorization: token } : {})
+        ...(token ? { Authorization: token } : {})
       },
       body: JSON.stringify({ title, content })
     })

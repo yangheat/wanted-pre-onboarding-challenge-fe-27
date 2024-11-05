@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Todo, TodoEditContent } from '../../../../entities/todo/model/types'
+import { authController } from '../../../../entities/auth'
 
 export default function TodoDetail({
   selectedTodo,
@@ -14,7 +15,8 @@ export default function TodoDetail({
   const [content, setContent] = useState<string | undefined>('')
   const [isEdit, setIsEdit] = useState(false)
 
-  const token = localStorage.getItem('sessionToken')
+  const auth = new authController()
+  const token = auth.getToken()
   const headers = {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: token } : {})

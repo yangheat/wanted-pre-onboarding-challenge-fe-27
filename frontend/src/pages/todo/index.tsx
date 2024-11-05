@@ -3,11 +3,13 @@ import AddTodoForm from '../../features/todo/add/ui/AddTodoForm'
 import type { Todo, TodoEditContent } from '../../entities/todo/model/types'
 import TodoList from '../../features/todo/add/ui/TodoList'
 import TodoDetail from '../../features/todo/add/ui/TodoDetail'
+import { authController } from '../../entities/auth'
 
 export default function Todo() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [selectedTodo, setSelectedTodo] = useState<TodoEditContent>({})
-  const token = localStorage.getItem('sessionToken')
+  const auth = new authController()
+  const token = auth.getToken()
 
   useEffect(() => {
     fetch('http://localhost:8080/todos', {

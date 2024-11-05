@@ -2,9 +2,12 @@ import { createBrowserRouter, Navigate, redirect } from 'react-router-dom'
 import Todo from './pages/todo/index.tsx'
 import Login from './pages/auth/login/index.tsx'
 import Signup from './pages/auth/signup/index.tsx'
+import { authController } from './entities/auth/index.ts'
+
+const auth = new authController()
 
 function authLoader() {
-  if (!localStorage.getItem('sessionToken')) {
+  if (!auth.getToken()) {
     return redirect('/auth/login')
   }
   return null

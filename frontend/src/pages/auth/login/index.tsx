@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { authController } from '../../../entities/auth'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -25,7 +26,8 @@ export default function Login() {
         if (result.details) {
           setErrorMessage(result.details)
         } else {
-          localStorage.setItem('sessionToken', result.token)
+          const auth = new authController()
+          auth.setToken(result.token)
           navigate('/')
         }
       },
