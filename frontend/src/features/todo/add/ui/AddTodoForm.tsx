@@ -1,12 +1,15 @@
-import { KeyboardEvent, useState } from 'react'
+import { Dispatch, KeyboardEvent, SetStateAction, useState } from 'react'
+import { Todo } from '../../../../entities/todo/model/types'
 
 export default function AddTodoForm({
-  handleCreateButtonClick
+  setTodos
 }: {
-  handleCreateButtonClick: (title: string, content: string) => void
+  setTodos: Dispatch<SetStateAction<Todo[]>>
 }) {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+
+  const token = localStorage.getItem('sessionToken')
 
   function resetInput() {
     setTitle('')
@@ -14,9 +17,21 @@ export default function AddTodoForm({
   }
 
   function handleCreate() {
-    handleCreateButtonClick(title, content)
+    fetch('http://localhost:8080/todos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+    ...(token ? { Authorization: token } : {})
+      },
+      body: JSON.stringify({ title, content })
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        setTodos((todos) => [...todos, result.data])
+      })
     resetInput()
   }
+
   return (
     <>
       <h1>Todo Create</h1>

@@ -8,25 +8,14 @@ export default function Todo() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [selectedTodo, setSelectedTodo] = useState<TodoEditContent>({})
   const token = localStorage.getItem('sessionToken')
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: token } : {})
-  }
-
-  function handleCreateButtonClick(title: string, content: string) {
-    fetch('http://localhost:8080/todos', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ title, content })
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        setTodos([...todos, result.data])
-      })
-  }
 
   useEffect(() => {
-    fetch('http://localhost:8080/todos', { headers })
+    fetch('http://localhost:8080/todos', {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: token } : {})
+      }
+    })
       .then((response) => response.json())
       .then((result) => setTodos(result.data))
     console.log('useEffect')
@@ -36,7 +25,7 @@ export default function Todo() {
 
   return (
     <>
-      <AddTodoForm handleCreateButtonClick={handleCreateButtonClick} />
+      <AddTodoForm setTodos={setTodos} />
       <hr />
       <section style={{ display: 'flex' }}>
         <section
