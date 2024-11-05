@@ -1,5 +1,5 @@
 import { Fragment } from 'react/jsx-runtime'
-import { Todo, TodoEditContent } from '../../../../entities/todo/model/types'
+import { Todo, TodoEditContent } from '../../../entities/todo/model/types'
 import { Dispatch, SetStateAction } from 'react'
 
 export default function TodoList({

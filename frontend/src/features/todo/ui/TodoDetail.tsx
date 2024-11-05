@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Todo, TodoEditContent } from '../../../../entities/todo/model/types'
-import { authController } from '../../../../entities/auth'
+import { Todo, TodoEditContent } from '../../../entities/todo/model/types'
+import { authController } from '../../../entities/auth'
 
 export default function TodoDetail({
   selectedTodo,
