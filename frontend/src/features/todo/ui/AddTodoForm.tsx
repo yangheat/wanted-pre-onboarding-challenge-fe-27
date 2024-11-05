@@ -1,6 +1,7 @@
 import { Dispatch, KeyboardEvent, SetStateAction, useState } from 'react'
-import { Todo } from '../../../../entities/todo/model/types'
-import { authController } from '../../../../entities/auth'
+
+import { authController } from '../../../entities/auth'
+import { Todo } from '../../../entities/todo/model/types'
 
 export default function AddTodoForm({
   setTodos
