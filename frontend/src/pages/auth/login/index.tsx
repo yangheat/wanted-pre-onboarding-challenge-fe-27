@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authController } from '../../../entities/auth'
+import { Account } from '../../../entities/auth/model/types'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -8,33 +9,33 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState('')
   const navigate = useNavigate()
 
-  async function login() {
-    const resoponse = await fetch('http://localhost:8080/users/login', {
+  const auth = new authController()
+
+  async function login(params: Account) {
+    const response = await fetch('http://localhost:8080/users/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify(params)
     })
 
-    return resoponse.json()
+    if (!response.ok) {
+      throw Error(`${response.status} (${response.statusText})`)
+    }
+
+    return response.json()
   }
 
   function handleLoginButtonClick() {
-    login().then(
-      (result) => {
-        if (result.details) {
-          setErrorMessage(result.details)
-        } else {
-          const auth = new authController()
-          auth.setToken(result.token)
-          navigate('/')
-        }
-      },
-      (error) => {
-        console.log('error:', error)
+    login({email, password}).then((result) => {
+        auth.setToken(result.token)
+        navigate('/')
       }
-    )
+    ).catch((error) => {
+      debugger
+      alert(error)
+    })
   }
 
   return (
