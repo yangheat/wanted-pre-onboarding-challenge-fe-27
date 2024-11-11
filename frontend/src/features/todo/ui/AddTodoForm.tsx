@@ -1,16 +1,12 @@
-import { Dispatch, KeyboardEvent, SetStateAction, useState } from 'react'
-
+import { FormEvent, useState } from 'react'
 import { authController } from '../../../entities/auth'
 import { Todo } from '../../../entities/todo/model/types'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export default function AddTodoForm({
-  setTodos
-}: {
-  setTodos: Dispatch<SetStateAction<Todo[]>>
-}) {
+export default function AddTodoForm() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-
+  const queryClient = useQueryClient()
   const auth = new authController()
   const token = auth.getToken()
 
@@ -19,45 +15,60 @@ export default function AddTodoForm({
     setContent('')
   }
 
-  function handleCreate() {
-    fetch('http://localhost:8080/todos', {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    addTodoMutation.mutate({ title, content })
+  }
+
+  async function addTodo(params: {
+    title: string
+    content: string
+  }): Promise<Todo> {
+    return fetch('http://localhost:8080/todos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: token } : {})
       },
-      body: JSON.stringify({ title, content })
+      body: JSON.stringify(params)
     })
       .then((response) => response.json())
-      .then((result) => {
-        setTodos((todos) => [...todos, result.data])
-      })
-    resetInput()
+      .then((result) => result)
   }
+
+  const addTodoMutation = useMutation({
+    mutationFn: addTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+      resetInput()
+    }
+  })
 
   return (
     <>
       <h1>Todo Create</h1>
-      <section style={{ display: 'inline-grid' }}>
-        <input
-          type="value"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          autoFocus
-        />
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.code !== 'Enter') return
-            handleCreate()
-          }}
-        />
-        <section>
-          <button onClick={handleCreate}>생성</button>
-          <button onClick={resetInput}>초기화</button>
+      <form onSubmit={handleSubmit}>
+        <section style={{ display: 'inline-grid' }}>
+          <input
+            type="value"
+            name="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            autoFocus
+          />
+          <textarea
+            name="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <section>
+            <button type="submit">생성</button>
+            <button type="button" onClick={resetInput}>
+              초기화
+            </button>
+          </section>
         </section>
-      </section>
+      </form>
     </>
   )
 }

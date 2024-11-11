@@ -1,20 +1,19 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Todo, TodoEditContent } from '../../../entities/todo/model/types'
+import { TodoEditContent } from '../../../entities/todo/model/types'
 import { authController } from '../../../entities/auth'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export default function TodoDetail({
   selectedTodo,
-  setSelectedTodo,
-  setTodos
+  setSelectedTodo
 }: {
   selectedTodo: TodoEditContent
   setSelectedTodo: Dispatch<SetStateAction<TodoEditContent>>
-  setTodos: Dispatch<SetStateAction<Todo[]>>
 }) {
-  const [title, setTitle] = useState<string | undefined>('')
-  const [content, setContent] = useState<string | undefined>('')
+  const [title, setTitle] = useState<string>('')
+  const [content, setContent] = useState<string>('')
   const [isEdit, setIsEdit] = useState(false)
-
+  const queryClient = useQueryClient()
   const auth = new authController()
   const token = auth.getToken()
   const headers = {
@@ -22,51 +21,56 @@ export default function TodoDetail({
     ...(token ? { Authorization: token } : {})
   }
 
-  function handleSaveButtonClick() {
-    fetch(`http://localhost:8080/todos/${selectedTodo.id}`, {
+  const editTodoMutation = useMutation({
+    mutationFn: editTodo,
+    onSuccess: (result) => {
+      setSelectedTodo(result.data)
+      setIsEdit(false)
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    }
+  })
+
+  const deleteTodoMutation = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      setSelectedTodo({})
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    }
+  })
+
+  async function editTodo(params: { title: string; content: string }) {
+    return fetch(`http://localhost:8080/todos/${selectedTodo.id}`, {
       method: 'PUT',
       headers,
-      body: JSON.stringify({ title, content })
+      body: JSON.stringify(params)
     })
       .then((response) => response.json())
-      .then((result) => {
-        if (result.details) {
-          alert(result.details)
-          return
-        }
-
-        alert('정상적으로 수정하였습니다.')
-        setSelectedTodo(result.data)
-        setIsEdit(false)
-        setTodos((todos) => {
-          return todos.map((todo) =>
-            todo.id === result.data.id ? result.data : todo
-          )
-        })
-      })
+      .then((result) => result)
   }
 
-  function handleRemoveButtonClick() {
-    const id = selectedTodo.id
-    if (!confirm('정말 삭제하시겠습니까?')) {
-      return
-    }
-
-    fetch(`http://localhost:8080/todos/${id}`, {
+  async function deleteTodo() {
+    return fetch(`http://localhost:8080/todos/${selectedTodo.id}`, {
       method: 'DELETE',
       headers
     })
       .then((response) => response.json())
-      .then((result) => {
-        if (result.details) {
-          alert(result.details)
-          return
-        }
+      .then((result) => result)
+  }
 
-        setTodos((todos) => todos.filter((todo) => todo.id !== id))
-        setSelectedTodo({})
-        alert('정상적으로 삭제하였습니다.')
-      })
+  function handleSaveButtonClick() {
+    editTodoMutation.mutate({ title, content })
+  }
+
+  function handleRemoveButtonClick() {
+    const id = selectedTodo.id
+
+    if (!id) {
+      return
+    }
+
+    if (confirm('정말 삭제하시겠습니까?')) {
+      deleteTodoMutation.mutate()
+    }
   }
 
   return (
@@ -101,8 +105,8 @@ export default function TodoDetail({
             <button
               onClick={() => {
                 setIsEdit(true)
-                setTitle(selectedTodo.title)
-                setContent(selectedTodo.content)
+                setTitle(selectedTodo.title || '')
+                setContent(selectedTodo.content || '')
               }}
             >
               수정
