@@ -3,6 +3,7 @@ import Todo from './pages/todo/index.tsx'
 import Login from './pages/auth/login/index.tsx'
 import Signup from './pages/auth/signup/index.tsx'
 import { authController } from './entities/auth/index.ts'
+import TodoDetail from './pages/todo/[id]/index.tsx'
 
 const auth = new authController()
 
@@ -41,5 +42,9 @@ export const router = createBrowserRouter([
         element: <Signup />
       }
     ]
+  },
+  {
+    path: '/todo/:id',
+    element: <TodoDetail />
   }
 ])

@@ -1,28 +1,31 @@
-import { Fragment } from 'react/jsx-runtime'
-import { Todo, TodoEditContent } from '../../../entities/todo/model/types'
-import { Dispatch, SetStateAction } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { Todo } from '../../../entities/todo/model/types'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { authController } from '../../../entities/auth'
+import { useNavigate } from 'react-router-dom'
 
 const auth = new authController()
 const token = auth.getToken()
-
+const headers = { ...(token ? { Authorization: token } : {}) }
 async function fetchTodos(): Promise<Todo[]> {
   return fetch('http://localhost:8080/todos', {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: token } : {})
-    }
+    headers
   })
     .then((response) => response.json())
     .then((result) => result.data || [])
 }
 
-export default function TodoList({
-  setSelectedTodo
-}: {
-  setSelectedTodo: Dispatch<SetStateAction<TodoEditContent>>
-}) {
+async function deleteTodo(id: string) {
+  return fetch(`http://localhost:8080/todos/${id}`, {
+    method: 'DELETE',
+    headers
+  })
+    .then((response) => response.json())
+    .then((result) => result)
+}
+
+export default function TodoList() {
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const {
     data: todos,
     isLoading,
@@ -32,6 +35,19 @@ export default function TodoList({
     queryKey: ['todos'],
     queryFn: fetchTodos
   })
+
+  const deleteTodoMutation = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    }
+  })
+
+  function handleRemoveButtonClick(id: string) {
+    if (confirm('정말 삭제하시겠습니까?')) {
+      deleteTodoMutation.mutate(id)
+    }
+  }
 
   if (isLoading) {
     return <div className="p-4">Loading...</div>
@@ -46,14 +62,17 @@ export default function TodoList({
       <h1>Todo List</h1>
       {todos &&
         todos.map((todo) => (
-          <Fragment key={todo.id}>
+          <section key={todo.id} style={{ display: 'flex' }}>
             <li
-              onClick={() => setSelectedTodo({ ...todo, isEdit: false })}
+              onClick={() => navigate(`/todo/${todo.id}`)}
               style={{ cursor: 'pointer' }}
             >
               {todo.title}
             </li>
-          </Fragment>
+            <button onClick={() => handleRemoveButtonClick(todo.id)}>
+              삭제
+            </button>
+          </section>
         ))}
     </>
   )

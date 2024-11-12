@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import AddTodoForm from '../../features/todo/ui/AddTodoForm'
-import type { Todo, TodoEditContent } from '../../entities/todo/model/types'
+import type { Todo } from '../../entities/todo/model/types'
 import TodoList from '../../features/todo/ui/TodoList'
-import TodoDetail from '../../features/todo/ui/TodoDetail'
 
 // TODO: tanstack-query defer를 이용하여 <Suspense를 사용해보자.
 // export async function todoPageLoader() {
@@ -37,24 +35,10 @@ import TodoDetail from '../../features/todo/ui/TodoDetail'
  */
 
 export default function Todo() {
-  const [selectedTodo, setSelectedTodo] = useState<TodoEditContent>({})
-
   return (
     <>
       <AddTodoForm />
-      <section style={{ display: 'flex' }}>
-        <section
-          style={{ width: '50%', marginLeft: '1rem', borderRight: '1px solid' }}
-        >
-          <TodoList setSelectedTodo={setSelectedTodo} />
-        </section>
-        <section style={{ width: '50%', marginLeft: '1rem' }}>
-          <TodoDetail
-            selectedTodo={selectedTodo}
-            setSelectedTodo={setSelectedTodo}
-          />
-        </section>
-      </section>
+      <TodoList />
     </>
   )
 }
