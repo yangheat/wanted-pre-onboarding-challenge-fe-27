@@ -1,33 +1,40 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent } from 'react'
 import { authController } from '../../../entities/auth'
 import { Todo } from '../../../entities/todo/model/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import TodoInput from './TodoInput'
+import { useTodoInputData } from '../hooks'
 
 export default function AddTodoForm() {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+  const [todoInputData, setTodoInputData] = useTodoInputData()
+
   const queryClient = useQueryClient()
   const auth = new authController()
   const token = auth.getToken()
 
   function resetInput() {
-    setTitle('')
-    setContent('')
+    setTodoInputData({
+      title: '',
+      content: '',
+      priority: 'low'
+    })
   }
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    addTodoMutation.mutate({ title, content })
+
+    addTodoMutation.mutate(todoInputData)
   }
 
   async function addTodo(params: {
     title: string
     content: string
+    priority: string
   }): Promise<Todo> {
     return fetch('http://localhost:8080/todos', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         ...(token ? { Authorization: token } : {})
       },
       body: JSON.stringify(params)
@@ -49,17 +56,9 @@ export default function AddTodoForm() {
       <h1>Todo Create</h1>
       <form onSubmit={handleSubmit}>
         <section style={{ display: 'inline-grid' }}>
-          <input
-            type="value"
-            name="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            autoFocus
-          />
-          <textarea
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+          <TodoInput
+            todoInputData={todoInputData}
+            setTodoInputData={setTodoInputData}
           />
           <section>
             <button type="submit">생성</button>
