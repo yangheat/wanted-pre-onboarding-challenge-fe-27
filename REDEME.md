@@ -7,5 +7,19 @@ git checkout refactor
 - frontend
   - Vite, React Router v6, React 함수 컴포넌트(Hooks) 기반으로 개발을 진행합니다.
 
+# 동작
+- fronend
+```bash
+cd ./frontend
+npm install
+npm run dev
+```
+- backend
+```bash
+cd ./wanted-pre-onboarding-challenge-fe-1-api
+npm install
+npm run start
+```
+
 # 참고
 https://github.com/starkoora/wanted-pre-onboarding-challenge-fe-1-api/tree/refactor
