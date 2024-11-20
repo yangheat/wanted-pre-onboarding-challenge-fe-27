@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { authController } from '../../../entities/auth'
 import { useNavigate } from 'react-router-dom'
-import { todosQuery } from '../../../entities/todo/routes/todos'
+import { todosQuery } from '../../../entities/todo/model/query'
 
 const auth = new authController()
 const token = auth.getToken()
@@ -19,7 +19,7 @@ async function deleteTodo(id: string) {
 export default function TodoList() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { data: todos } = useQuery(todosQuery)
+  const { data: todos } = useQuery(todosQuery())
 
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
