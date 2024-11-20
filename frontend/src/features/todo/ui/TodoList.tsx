@@ -1,18 +1,11 @@
-import { Todo } from '../../../entities/todo/model/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { authController } from '../../../entities/auth'
 import { useNavigate } from 'react-router-dom'
+import { todosQuery } from '../../../entities/todo/routes/todos'
 
 const auth = new authController()
 const token = auth.getToken()
 const headers = { ...(token ? { Authorization: token } : {}) }
-async function fetchTodos(): Promise<Todo[]> {
-  return fetch('http://localhost:8080/todos', {
-    headers
-  })
-    .then((response) => response.json())
-    .then((result) => result.data || [])
-}
 
 async function deleteTodo(id: string) {
   return fetch(`http://localhost:8080/todos/${id}`, {
@@ -26,15 +19,7 @@ async function deleteTodo(id: string) {
 export default function TodoList() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const {
-    data: todos,
-    isLoading,
-    isError,
-    error
-  } = useQuery({
-    queryKey: ['todos'],
-    queryFn: fetchTodos
-  })
+  const { data: todos } = useQuery(todosQuery)
 
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
@@ -47,14 +32,6 @@ export default function TodoList() {
     if (confirm('정말 삭제하시겠습니까?')) {
       deleteTodoMutation.mutate(id)
     }
-  }
-
-  if (isLoading) {
-    return <div className="p-4">Loading...</div>
-  }
-
-  if (isError) {
-    return <div className="p-4 text-red-500">Error: {error.message}</div>
   }
 
   return (

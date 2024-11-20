@@ -33,7 +33,6 @@ export default function Login() {
         navigate('/')
       }
     ).catch((error) => {
-      debugger
       alert(error)
     })
   }

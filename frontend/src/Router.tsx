@@ -4,10 +4,11 @@ import Login from './pages/auth/login/index.tsx'
 import Signup from './pages/auth/signup/index.tsx'
 import { authController } from './entities/auth/index.ts'
 import TodoDetail from './pages/todo/[id]/index.tsx'
+import { todosLoader } from './entities/todo/routes/todos.tsx'
 
-const auth = new authController()
 
 function authLoader() {
+  const auth = new authController()
   if (!auth.getToken()) {
     return redirect('/auth/login')
   }
@@ -17,9 +18,26 @@ function authLoader() {
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Todo />,
     loader: authLoader,
     children: [
+      {
+        index: true,
+        element: <Navigate to="/todo" replace />,
+        loader: todosLoader
+      },
+      {
+        path: '/todo',
+        children: [
+          {
+            index: true,
+            element: <Todo />
+          },
+          {
+            path: ':id',
+            element: <TodoDetail />
+          }
+        ]
+      },
       {
         path: '*',
         element: <Navigate to="/auth/login" replace />
@@ -43,8 +61,8 @@ export const router = createBrowserRouter([
       }
     ]
   },
-  {
-    path: '/todo/:id',
-    element: <TodoDetail />
-  }
+  // {
+  //   path: '/todo/:id',
+  //   element: <TodoDetail />
+  // }
 ])
