@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { authController } from '../../../entities/auth'
-import {  TodoEditInputData } from '../../../entities/todo/model/types'
+import { TodoEditInputData } from '../../../entities/todo/model/types'
 import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useTodoInputData } from '../../../features/todo/hooks'
-import TodoInput from '../../../features/todo/ui/TodoInput'
+import TodoInput from '../../../entities/ui/TodoInput'
 import { todoQuery } from '../../../entities/todo/model/query'
 
 const auth = new authController()
@@ -60,23 +60,25 @@ export default function TodoDetail() {
           />
         </section>
       ) : (
-        <>
-          <button
-            onClick={() => {
-              setIsEdit(!isEdit)
-              setTodoInputData({
-                title: todo.title,
-                content: todo.content,
-                priority: todo.priority
-              })
-            }}
-          >
-            수정
-          </button>
-          <p>{todo.title}</p>
-          <p>{todo.content}</p>
-          <p>{todo.priority}</p>
-        </>
+        todo && (
+          <>
+            <button
+              onClick={() => {
+                setIsEdit(!isEdit)
+                setTodoInputData({
+                  title: todo.title,
+                  content: todo.content,
+                  priority: todo.priority
+                })
+              }}
+            >
+              수정
+            </button>
+            <p>{todo.title}</p>
+            <p>{todo.content}</p>
+            <p>{todo.priority}</p>
+          </>
+        )
       )}
     </>
   )

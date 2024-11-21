@@ -2,7 +2,7 @@ import { FormEvent } from 'react'
 import { authController } from '../../../entities/auth'
 import { Todo } from '../../../entities/todo/model/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import TodoInput from './TodoInput'
+import TodoInput from '../../../entities/ui/TodoInput'
 import { useTodoInputData } from '../hooks'
 
 export default function AddTodoForm() {

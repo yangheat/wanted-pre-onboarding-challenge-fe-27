@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
-import { TodoInputData } from '../../../entities/todo/model/types'
+import { TodoInputData } from '../todo/model/types'
 
 export default function TodoInput({
   todoInputData,
