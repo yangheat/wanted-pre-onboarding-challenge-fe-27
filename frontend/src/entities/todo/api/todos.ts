@@ -13,4 +13,14 @@ async function fetchTodos(): Promise<Todo[]> {
   return result.data || []
 }
 
-export { fetchTodos }
+async function fetchTodo(id: string): Promise<Todo> {
+  const token = auth.getToken();
+  const response = await fetch(`http://localhost:8080/todos/${id}`, {
+    headers: { ...(token && { Authorization: token }) }
+  })
+  const result = await response.json()
+
+  return result.data
+}
+
+export { fetchTodos, fetchTodo }
