@@ -1,26 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { authController } from '../../../entities/auth'
-import { TodoEditInputData } from '../../../entities/todo/model/types'
 import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useTodoInputData } from '../../../features/todo/hooks'
 import TodoInput from '../../../entities/ui/TodoInput'
 import { todoQuery } from '../../../entities/todo/model/query'
-
-const auth = new authController()
-const token = auth.getToken()
-
-async function editTodo(params: TodoEditInputData) {
-  return fetch(`http://localhost:8080/todos/${params.id}`, {
-    method: 'PUT',
-    headers: {
-      ...(token ? { Authorization: token } : {})
-    },
-    body: JSON.stringify(params)
-  })
-    .then((response) => response.json())
-    .then((result) => result)
-}
+import { editTodo } from '../../../entities/todo/api/todos'
 
 export default function TodoDetail() {
   const [isEdit, setIsEdit] = useState(false)

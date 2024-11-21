@@ -1,20 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { authController } from '../../../entities/auth'
 import { useNavigate } from 'react-router-dom'
 import { todosQuery } from '../../../entities/todo/model/query'
-
-const auth = new authController()
-const token = auth.getToken()
-const headers = { ...(token ? { Authorization: token } : {}) }
-
-async function deleteTodo(id: string) {
-  return fetch(`http://localhost:8080/todos/${id}`, {
-    method: 'DELETE',
-    headers
-  })
-    .then((response) => response.json())
-    .then((result) => result)
-}
+import { deleteTodo } from '../../../entities/todo/api/todos'
 
 export default function TodoList() {
   const navigate = useNavigate()
