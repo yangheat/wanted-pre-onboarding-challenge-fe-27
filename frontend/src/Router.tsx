@@ -6,7 +6,6 @@ import { authController } from './entities/auth/index.ts'
 import TodoDetail from './pages/todo/[id]/index.tsx'
 import { todosLoader } from './entities/todo/model/loader.ts'
 
-
 function authLoader() {
   const auth = new authController()
   if (!auth.getToken()) {
@@ -22,15 +21,15 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/todo" replace />,
-        loader: todosLoader
+        element: <Navigate to="/todo" replace />
       },
       {
         path: '/todo',
         children: [
           {
             index: true,
-            element: <Todo />
+            element: <Todo />,
+            loader: todosLoader
           },
           {
             path: ':id',

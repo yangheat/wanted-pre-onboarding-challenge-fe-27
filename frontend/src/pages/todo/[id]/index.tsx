@@ -1,9 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useLoaderData, useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useTodoInputData } from '../../../features/todo/hooks'
 import TodoInput from '../../../entities/ui/TodoInput'
-import { todoQuery } from '../../../entities/todo/model/query'
 import { editTodo } from '../../../entities/todo/api/todos'
 
 export default function TodoDetail() {
@@ -13,7 +12,7 @@ export default function TodoDetail() {
 
   const [todoInputData, setTodoInputData] = useTodoInputData()
 
-  const { data: todo } = useQuery(todoQuery(id))
+  const todo = useLoaderData()
 
   const editTodoMutation = useMutation({
     mutationFn: editTodo,

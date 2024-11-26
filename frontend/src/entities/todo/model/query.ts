@@ -1,12 +1,13 @@
-import { fetchTodo, fetchTodos } from "../api/todos"
-import { Todo } from "./types"
+import { fetchTodos } from "../api/todos";
 
-const queryOptions = <T>(queryKey: string[], queryFn: () => Promise<T>, options?: {enabled: boolean, suspense: boolean}) => ({
-  queryKey, queryFn, ...options
-})
+type Query = {
+  queryKey: string[]
+  queryFn: () => Promise<any>
+}
 
-const todosQuery = () => queryOptions<Todo[]>(['todos'], fetchTodos)
-
-const todoQuery = (id: string) => queryOptions<Todo>(['todo', id], () => fetchTodo(id), { enabled: !!id, suspense: true })
-
-export { todosQuery, todoQuery }
+export const queries: Record<string, Query> = {
+  todos: {
+    queryKey: ['todos'],
+    queryFn: fetchTodos
+  }
+}
