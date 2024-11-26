@@ -60,4 +60,4 @@ async function deleteTodo(id: string) {
     .then((result) => result)
 }
 
-export { fetchTodos, fetchTodo, addTodo, editTodo, }
+export { fetchTodos, fetchTodo, addTodo, editTodo, deleteTodo }
