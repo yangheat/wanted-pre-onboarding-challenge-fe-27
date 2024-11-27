@@ -1,18 +1,32 @@
 import { QueryClient } from "@tanstack/react-query"
-import { queries } from "./query"
+import { todo, todos } from "./query"
+import { Todo } from "./types"
+import { LoaderFunctionArgs } from "react-router-dom"
 
 const queryClient = new QueryClient()
 
-const todosLoader = async () => {
-  await Promise.all(Object.values(queries).map(query => queryClient.prefetchQuery(query)))
+const loaderQueryData = async <T>(queryKey: string[], options: {
+  queryKey: string[];
+  queryFn: () => Promise<T>;
+}): Promise<{ [key: string]: T }> => {
+  const cached = queryClient.getQueryData(queryKey) as T
+  if (cached) {
+    return {
+      [queryKey[0]]: cached
+    }
+  }
 
-  return Object.keys(queries).reduce((result, query) => {
-    return { ...result, [query]: queryClient.getQueryData([query]) }
-  }, {})
-
-  // return Object.fromEntries(
-  //   Object.keys(queries).map(query => [query, queryClient.getQueryData([query])])
-  // )
+  await queryClient.prefetchQuery(options)
+  return {
+    [queryKey[0]]: queryClient.getQueryData(queryKey) as T
+  }
 }
 
-export { todosLoader }
+const todosLoader = () => loaderQueryData<Todo[]>(['todos'], todos())
+
+const todoLoader = ({ params }: LoaderFunctionArgs) => {
+  const id = params.id as string
+
+  return loaderQueryData<Todo>(['todo', id], todo(id))
+}
+export { todosLoader, todoLoader }

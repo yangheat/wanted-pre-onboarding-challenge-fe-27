@@ -4,7 +4,7 @@ import Login from './pages/auth/login/index.tsx'
 import Signup from './pages/auth/signup/index.tsx'
 import { authController } from './entities/auth/index.ts'
 import TodoDetail from './pages/todo/[id]/index.tsx'
-import { todosLoader } from './entities/todo/model/loader.ts'
+import { todoLoader, todosLoader } from './entities/todo/model/loader.ts'
 
 function authLoader() {
   const auth = new authController()
@@ -33,7 +33,8 @@ export const router = createBrowserRouter([
           },
           {
             path: ':id',
-            element: <TodoDetail />
+            element: <TodoDetail />,
+            loader: todoLoader
           }
         ]
       },

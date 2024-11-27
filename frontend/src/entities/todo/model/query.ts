@@ -1,13 +1,17 @@
-import { fetchTodos } from "../api/todos";
+import { fetchTodo, fetchTodos } from "../api/todos";
 
-type Query = {
-  queryKey: string[]
-  queryFn: () => Promise<any>
-}
-
-export const queries: Record<string, Query> = {
-  todos: {
+function todos() {
+  return {
     queryKey: ['todos'],
     queryFn: fetchTodos
   }
 }
+
+function todo(id: string) {
+  return {
+    queryKey: ['todo', id],
+    queryFn: () => fetchTodo(id)
+  }
+}
+
+export { todos, todo }

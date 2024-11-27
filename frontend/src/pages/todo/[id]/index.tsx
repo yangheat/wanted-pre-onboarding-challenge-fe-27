@@ -12,7 +12,7 @@ export default function TodoDetail() {
 
   const [todoInputData, setTodoInputData] = useTodoInputData()
 
-  const todo = useLoaderData()
+  const { todo } = useLoaderData()
 
   const editTodoMutation = useMutation({
     mutationFn: editTodo,
@@ -43,25 +43,23 @@ export default function TodoDetail() {
           />
         </section>
       ) : (
-        todo && (
-          <>
-            <button
-              onClick={() => {
-                setIsEdit(!isEdit)
-                setTodoInputData({
-                  title: todo.title,
-                  content: todo.content,
-                  priority: todo.priority
-                })
-              }}
-            >
-              수정
-            </button>
-            <p>{todo.title}</p>
-            <p>{todo.content}</p>
-            <p>{todo.priority}</p>
-          </>
-        )
+        <>
+          <button
+            onClick={() => {
+              setIsEdit(!isEdit)
+              setTodoInputData({
+                title: todo.title,
+                content: todo.content,
+                priority: todo.priority
+              })
+            }}
+          >
+            수정
+          </button>
+          <p>{todo.title}</p>
+          <p>{todo.content}</p>
+          <p>{todo.priority}</p>
+        </>
       )}
     </>
   )
