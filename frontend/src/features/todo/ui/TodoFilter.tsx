@@ -11,6 +11,11 @@ import { useState } from "react"
 const currentURL = new URL(location.href);
 const params = new URLSearchParams(currentURL.search)
 
+function setQueryString(key: string, value: string) {
+  params.set(key, value);
+  currentURL.search = params.toString();
+  window.history.pushState({}, '', currentURL.toString());
+}
 
 function Sort() {
   const [sort, setSort] = useState('')
@@ -18,15 +23,7 @@ function Sort() {
   function handleSortChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value
     setSort(value)
-
-    // 쿼리 스트링 추가
-    params.set('sort', value);
-
-    // 새로운 URL 생성
-    currentURL.search = params.toString();
-
-    // 페이지 URL 업데이트
-    window.history.pushState({}, '', currentURL.toString());
+    setQueryString('sort', value)
   }
 
   return (
@@ -46,6 +43,7 @@ function Order() {
 
   function handleOrderChange(e: React.ChangeEvent<HTMLInputElement>) {
     setOrder(e.target.value)
+    setQueryString('order', e.target.value)
   }
 
   return (
@@ -63,6 +61,7 @@ function PriorityFilter() {
 
   function handlePriorityFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
     setPriorityFilter(e.target.value)
+    setQueryString('priorityFilter', e.target.value)
   }
 
   return (
@@ -81,6 +80,7 @@ function Keyword() {
 
   function handleKeywordChange(e: React.ChangeEvent<HTMLInputElement>) {
     setKeyword(e.target.value)
+    setQueryString('keyword', e.target.value)
   }
 
   return (
@@ -95,6 +95,7 @@ function CountOnly() {
 
   function handleCountOnlyChange(e: React.ChangeEvent<HTMLInputElement>) {
     setCountOnly(e.target.checked)
+    setQueryString('countOnly', e.target.checked.toString())
   }
 
   return (
