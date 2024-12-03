@@ -29,4 +29,4 @@ const todoLoader = ({ params }: LoaderFunctionArgs) => {
 
   return loaderQueryData<Todo>(['todo', id], todo(id))
 }
-export { todosLoader, todoLoader }
+export { queryClient, todosLoader, todoLoader }
