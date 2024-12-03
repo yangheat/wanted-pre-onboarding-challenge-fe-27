@@ -1,6 +1,7 @@
 import AddTodoForm from '../../features/todo/ui/AddTodoForm'
 import type { Todo } from '../../entities/todo/model/types'
 import TodoList from '../../features/todo/ui/TodoList'
+import TodoFilter from '../../features/todo/ui/TodoFilter'
 
 // TODO: tanstack-query defer를 이용하여 <Suspense를 사용해보자.
 // export async function todoPageLoader() {
@@ -38,6 +39,7 @@ export default function Todo() {
   return (
     <>
       <AddTodoForm />
+      <TodoFilter />
       <TodoList />
     </>
   )
